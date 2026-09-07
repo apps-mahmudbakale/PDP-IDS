@@ -1,543 +1,462 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $member->firstname }} {{ $member->surname }} - Member Profile</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --primary: #3699ff;
-            --primary-dark: #254fd8;
-            --secondary: #f3f6f9;
-            --success: #1bc47d;
-            --danger: #f64e60;
-            --warning: #ffa800;
-            --dark: #202124;
-            --muted: #5f6368;
-            --border: #d0d5dd;
-            --gray-100: #f8f9fa;
-            --gray-200: #f0f0f0;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            height: 100%;
-            background: var(--secondary);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            color: var(--dark);
-        }
-
-        .profile-wrapper {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        .profile-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .profile-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-            max-width: 700px;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        /* Header Section */
-        .profile-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-            position: relative;
-        }
-
-        .profile-image-wrapper {
-            margin-bottom: 24px;
-        }
-
-        .profile-avatar {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            border: 5px solid white;
-            object-fit: cover;
-            display: block;
-            margin: 0 auto;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .avatar-placeholder {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            border: 5px solid white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            font-size: 56px;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .profile-header-info {
-            margin-top: 16px;
-        }
-
-        .profile-name {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-
-        .profile-title {
-            font-size: 13px;
-            opacity: 0.9;
-            margin-bottom: 16px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .profile-position {
-            font-size: 16px;
-            margin-bottom: 16px;
-            opacity: 0.95;
-            font-weight: 600;
-        }
-
-        .category-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.25);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            border: 1.5px solid rgba(255, 255, 255, 0.5);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Body Section */
-        .profile-body {
-            padding: 40px;
-        }
-
-        .info-section {
-            margin-bottom: 32px;
-        }
-
-        .info-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .section-title {
-            font-size: 12px;
-            color: var(--muted);
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            letter-spacing: 0.5px;
-        }
-
-        .section-title i {
-            color: var(--primary);
-            font-size: 14px;
-        }
-
-        .info-row {
-            display: flex;
-            margin-bottom: 16px;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .info-row:last-child {
-            margin-bottom: 0;
-        }
-
-        .info-icon {
-            width: 36px;
-            height: 36px;
-            background: var(--secondary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary);
-            flex-shrink: 0;
-            font-size: 16px;
-        }
-
-        .info-content {
-            flex: 1;
-        }
-
-        .info-label {
-            font-size: 11px;
-            color: var(--muted);
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-bottom: 6px;
-            letter-spacing: 0.3px;
-        }
-
-        .info-value {
-            font-size: 15px;
-            color: var(--dark);
-            font-weight: 600;
-            word-break: break-word;
-        }
-
-        .info-value a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s;
-        }
-
-        .info-value a:hover {
-            color: var(--primary-dark);
-            text-decoration: underline;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 24px 0;
-        }
-
-        /* Action Buttons Section */
-        .action-section {
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-        }
-
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .action-btn {
-            padding: 12px 16px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s;
-            font-size: 13px;
-            text-align: center;
-        }
-
-        .action-btn-primary {
-            background: var(--primary);
-            color: white;
-            border: 1px solid var(--primary);
-        }
-
-        .action-btn-primary:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-            box-shadow: 0 4px 12px rgba(54, 153, 255, 0.3);
-            text-decoration: none;
-            color: white;
-        }
-
-        .action-btn-secondary {
-            background: var(--gray-100);
-            color: var(--dark);
-            border: 1px solid var(--border);
-        }
-
-        .action-btn-secondary:hover {
-            background: var(--gray-200);
-            border-color: var(--muted);
-            text-decoration: none;
-            color: var(--dark);
-        }
-
-        /* Footer */
-        .profile-footer {
-            text-align: center;
-            font-size: 12px;
-            color: var(--muted);
-            padding: 20px;
-            border-top: 1px solid var(--border);
-            background: var(--gray-100);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .profile-body {
-                padding: 28px;
-            }
-
-            .profile-header {
-                padding: 32px 20px;
-            }
-
-            .profile-name {
-                font-size: 24px;
-            }
-
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-
-            .action-buttons {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Status Badge */
-        .status-badge {
-            display: inline-block;
-            background: rgba(27, 196, 125, 0.1);
-            color: var(--success);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-left: 8px;
-        }
-    </style>
-</head>
-<body>
-    <div class="profile-wrapper">
-        <div class="profile-container">
-            <div class="profile-card">
-                <!-- Header with Image -->
-                <div class="profile-header">
-                    <div class="profile-image-wrapper">
-                        @if($member->image)
-                            <img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->firstname }}" class="profile-avatar">
-                        @else
-                            <div class="avatar-placeholder">
-                                {{ substr($member->firstname, 0, 1) }}{{ substr($member->surname, 0, 1) }}
-                            </div>
-                        @endif
-                    </div>
-
-                    <div class="profile-header-info">
-                        <div class="profile-name">
-                            @if($member->title)
-                                {{ $member->title }}
-                            @endif
-                            {{ $member->firstname }} {{ $member->surname }}
+<x-default-layout>
+    <div class="d-flex flex-column flex-root">
+        <!--begin::Main-->
+        <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+            <!--begin::Content wrapper-->
+            <div class="d-flex flex-column flex-column-fluid">
+                <!--begin::Toolbar-->
+                <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+                    <!--begin::Toolbar container-->
+                    <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
+                        <!--begin::Page title-->
+                        <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+                            <!--begin::Title-->
+                            <h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">
+                                Member Profile
+                            </h1>
+                            <!--end::Title-->
+                            <!--begin::Breadcrumb-->
+                            <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                                <!--begin::Item-->
+                                <li class="breadcrumb-item text-muted">
+                                    <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">Home</a>
+                                </li>
+                                <!--end::Item-->
+                                <!--begin::Item-->
+                                <li class="breadcrumb-item">
+                                    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+                                </li>
+                                <!--end::Item-->
+                                <!--begin::Item-->
+                                <li class="breadcrumb-item text-muted">Member Profile</li>
+                                <!--end::Item-->
+                            </ul>
+                            <!--end::Breadcrumb-->
                         </div>
-
-                        @if($member->position)
-                            <div class="profile-position">
-                                {{ $member->position }}
-                            </div>
-                        @endif
-
-                        <span class="category-badge">
-                            <i class="fas fa-id-badge"></i> {{ strtoupper($member->category) }}
-                        </span>
+                        <!--end::Page title-->
                     </div>
+                    <!--end::Toolbar container-->
                 </div>
+                <!--end::Toolbar-->
 
-                <!-- Body with Information -->
-                <div class="profile-body">
-                    <!-- Personal Information -->
-                    <div class="info-section">
-                        <div class="section-title">
-                            <i class="fas fa-user-circle"></i> Personal Information
-                        </div>
-
-                        <div class="info-row">
-                            <div class="info-icon">
-                                <i class="fas fa-id-card"></i>
-                            </div>
-                            <div class="info-content">
-                                <div class="info-label">Full Name</div>
-                                <div class="info-value">
-                                    @if($member->title)
-                                        {{ $member->title }}
-                                    @endif
-                                    {{ $member->firstname }} 
-                                    @if($member->middlename)
-                                        {{ $member->middlename }}
-                                    @endif
-                                    {{ $member->surname }}
-                                </div>
-                            </div>
-                        </div>
-
-                        @if($member->dob)
-                            <div class="info-row">
-                                <div class="info-icon">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </div>
-                                <div class="info-content">
-                                    <div class="info-label">Date of Birth</div>
-                                    <div class="info-value">{{ $member->dob->format('F d, Y') }}</div>
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Professional Information -->
-                    <div class="info-section">
-                        <div class="section-title">
-                            <i class="fas fa-briefcase"></i> Professional Information
-                        </div>
-
-                        <div class="info-row">
-                            <div class="info-icon">
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <div class="info-content">
-                                <div class="info-label">Position/Title</div>
-                                <div class="info-value">{{ $member->position ?? 'N/A' }}</div>
-                            </div>
-                        </div>
-
-                        <div class="info-row">
-                            <div class="info-icon">
-                                <i class="fas fa-shield-alt"></i>
-                            </div>
-                            <div class="info-content">
-                                <div class="info-label">Category</div>
-                                <div class="info-value">
-                                    @if(strtoupper($member->category) === 'NWC')
-                                        National Working Committee
-                                    @elseif(strtoupper($member->category) === 'NEC')
-                                        National Executive Committee
-                                    @elseif(strtoupper($member->category) === 'DEP')
-                                        Deputy
-                                    @elseif(strtoupper($member->category) === 'STAFF')
-                                        Staff Member
-                                    @else
-                                        {{ ucfirst(strtolower($member->category)) }}
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Contact Information -->
-                    @if($member->phone)
-                    <div class="info-section">
-                        <div class="section-title">
-                            <i class="fas fa-phone"></i> Contact Information
-                        </div>
-
-                        <div class="info-row">
-                            <div class="info-icon">
-                                <i class="fas fa-mobile-alt"></i>
-                            </div>
-                            <div class="info-content">
-                                <div class="info-label">Phone Number</div>
-                                <div class="info-value">
-                                    <a href="tel:{{ $member->phone }}">{{ $member->phone }}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-
-                    <!-- Location Information -->
-                    @if($member->state || $member->pscode)
-                    <div class="info-section">
-                        <div class="section-title">
-                            <i class="fas fa-map-marker-alt"></i> Location Information
-                        </div>
-
-                        <div class="grid-2">
-                            @if($member->state)
-                                <div class="info-row">
-                                    <div class="info-icon">
-                                        <i class="fas fa-map"></i>
-                                    </div>
-                                    <div class="info-content">
-                                        <div class="info-label">State/Province</div>
-                                        <div class="info-value">{{ $member->state }}</div>
+                <!--begin::Content-->
+                <div id="kt_app_content" class="app-content flex-column-fluid">
+                    <!--begin::Content container-->
+                    <div id="kt_app_content_container" class="app-container container-xxl">
+                        <!--begin::Member Profile Image Card-->
+                        <div class="row gx-9 gy-6 mb-6">
+                            <div class="col-12">
+                                <div class="card" style="background: #f8f9fa; border: none; box-shadow: 0 1px 3px rgba(32, 33, 36, 0.08); overflow: hidden;">
+                                    <div class="card-body p-0">
+                                        <div style="display: flex; align-items: center; gap: 30px; padding: 40px;">
+                                            <!--begin::Profile Image-->
+                                            <div style="flex-shrink: 0;">
+                                                @if($member->image)
+                                                    <img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->firstname }}" style="width: 180px; height: 180px; border-radius: 12px; object-fit: cover; box-shadow: 0 4px 12px rgba(32, 33, 36, 0.15); border: 4px solid white;" />
+                                                @else
+                                                    <div style="width: 180px; height: 180px; border-radius: 12px; background: linear-gradient(135deg, #1a73e8 0%, #185abc 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 64px; font-weight: 700; box-shadow: 0 4px 12px rgba(32, 33, 36, 0.15); border: 4px solid white;">
+                                                        {{ substr($member->firstname, 0, 1) }}{{ substr($member->surname, 0, 1) }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <!--end::Profile Image-->
+                                            <!--begin::Member Info-->
+                                            <div style="flex: 1;">
+                                                <h2 style="font-size: 28px; font-weight: 700; color: #202124; margin-bottom: 8px;">
+                                                    @if($member->title)
+                                                        {{ $member->title }}
+                                                    @endif
+                                                    {{ $member->firstname }} {{ $member->surname }}
+                                                </h2>
+                                                @if($member->position)
+                                                    <p style="font-size: 16px; color: #5f6368; margin-bottom: 16px; font-weight: 500;">
+                                                        <i class="fas fa-briefcase" style="margin-right: 8px; color: #1a73e8;"></i>{{ $member->position }}
+                                                    </p>
+                                                @endif
+                                                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                                    <span class="badge" style="background: rgba(24, 90, 188, 0.1); color: #185abc; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600;">
+                                                        <i class="fas fa-id-badge me-1"></i>{{ strtoupper($member->category) }}
+                                                    </span>
+                                                    @if($member->seat)
+                                                        <span class="badge" style="background: rgba(26, 115, 232, 0.1); color: #1a73e8; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600;">
+                                                            <i class="fas fa-chair me-1"></i>Seat: {{ $member->seat }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <!--end::Member Info-->
+                                        </div>
                                     </div>
                                 </div>
-                            @endif
+                            </div>
+                        </div>
+                        <!--end::Member Profile Image Card-->
 
-                            @if($member->pscode)
-                                <div class="info-row">
-                                    <div class="info-icon">
-                                        <i class="fas fa-mailbox"></i>
+                        <div class="row gx-9 gy-6">
+                            <!--begin::Sidebar-->
+                            <div class="col-xxl-3">
+                                <!--begin::Sidebar Widget 1-->
+                                <div class="card mb-6" style="background: #f8f9fa; border: none; box-shadow: 0 1px 3px rgba(32, 33, 36, 0.08);">
+                                    <!--begin::Body-->
+                                    <div class="card-body pt-9 pb-0">
+                                        <!--begin::Summary-->
+                                        <div class="d-flex flex-center flex-column">
+                                            <!--begin::Avatar-->
+                                            <div class="symbol symbol-100px mb-6">
+                                                @if($member->image)
+                                                    <img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->firstname }}" />
+                                                @else
+                                                    <div class="symbol-label fs-3 bg-light-info text-info">
+                                                        {{ substr($member->firstname, 0, 1) }}{{ substr($member->surname, 0, 1) }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <!--end::Avatar-->
+                                            <!--begin::Name-->
+                                            <a href="#" class="text-gray-900 text-hover-primary fs-3 fw-bold mb-3" style="color: #202124;">
+                                                @if($member->title)
+                                                    {{ $member->title }}
+                                                @endif
+                                                {{ $member->firstname }} {{ $member->surname }}
+                                            </a>
+                                            <!--end::Name-->
+                                            <!--begin::Position-->
+                                            @if($member->position)
+                                                <div class="mb-6 text-center">
+                                                    <div class="badge" style="background: rgba(26, 115, 232, 0.1); color: #1a73e8;">{{ $member->position }}</div>
+                                                </div>
+                                            @endif
+                                            <!--end::Position-->
+                                            <!--begin::Info-->
+                                            <div class="text-center pb-5">
+                                                <div class="fs-5 fw-semibold mb-2">
+                                                    <span class="badge" style="background: rgba(24, 90, 188, 0.1); color: #185abc;">{{ strtoupper($member->category) }}</span>
+                                                </div>
+                                                @if($member->seat)
+                                                    <div style="color: #5f6368; font-size: 14px; font-weight: 500;">Seat: {{ $member->seat }}</div>
+                                                @endif
+                                            </div>
+                                            <!--end::Info-->
+                                        </div>
+                                        <!--end::Summary-->
+                                        <!--begin::Details-->
+                                        <div class="d-flex flex-stack pb-6">
+                                            <div class="text-center">
+                                                <div style="font-weight: 700; font-size: 24px; color: #202124;">{{ $member->category }}</div>
+                                                <div style="color: #5f6368; font-size: 12px; font-weight: 600; text-transform: uppercase;">Category</div>
+                                            </div>
+                                            <div class="text-center">
+                                                <div style="font-weight: 700; font-size: 24px; color: #202124;">{{ $member->seat ?? 'N/A' }}</div>
+                                                <div style="color: #5f6368; font-size: 12px; font-weight: 600; text-transform: uppercase;">Seat</div>
+                                            </div>
+                                        </div>
+                                        <!--end::Details-->
                                     </div>
-                                    <div class="info-content">
-                                        <div class="info-label">Postal Code</div>
-                                        <div class="info-value">{{ $member->pscode }}</div>
-                                    </div>
+                                    <!--end::Body-->
                                 </div>
-                            @endif
-                        </div>
-                    </div>
-                    @endif
+                                <!--end::Sidebar Widget 1-->
 
-                    <!-- Action Buttons -->
-                    @if($member->phone)
-                    <div class="action-section">
-                        <div class="action-buttons">
-                            <a href="tel:{{ $member->phone }}" class="action-btn action-btn-primary">
-                                <i class="fas fa-phone"></i> Call
-                            </a>
-                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $member->phone) }}" target="_blank" class="action-btn action-btn-secondary">
-                                <i class="fab fa-whatsapp"></i> WhatsApp
-                            </a>
+                                <!--begin::Sidebar Widget 2-->
+                                <div class="card" style="background: #f8f9fa; border: none; box-shadow: 0 1px 3px rgba(32, 33, 36, 0.08);">
+                                    <!--begin::Body-->
+                                    <div class="card-body pt-6">
+                                        <!--begin::Item-->
+                                        <div class="d-flex mb-8">
+                                            <!--begin::Icon-->
+                                            <div class="me-4">
+                                                <div style="width: 40px; height: 40px; background: rgba(26, 115, 232, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1a73e8; font-size: 18px;">
+                                                    <i class="fas fa-briefcase"></i>
+                                                </div>
+                                            </div>
+                                            <!--end::Icon-->
+                                            <!--begin::Info-->
+                                            <div class="flex-grow-1">
+                                                <a href="#" class="text-gray-900 text-hover-primary fw-bold fs-6" style="color: #202124;">Professional Info</a>
+                                                <div style="color: #5f6368; font-size: 12px; font-weight: 500;">{{ $member->position ?? 'N/A' }}</div>
+                                            </div>
+                                            <!--end::Info-->
+                                        </div>
+                                        <!--end::Item-->
+                                        <!--begin::Item-->
+                                        @if($member->phone)
+                                        <div class="d-flex mb-8">
+                                            <!--begin::Icon-->
+                                            <div class="me-4">
+                                                <div style="width: 40px; height: 40px; background: rgba(52, 168, 83, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #34a853; font-size: 18px;">
+                                                    <i class="fas fa-phone"></i>
+                                                </div>
+                                            </div>
+                                            <!--end::Icon-->
+                                            <!--begin::Info-->
+                                            <div class="flex-grow-1">
+                                                <a href="tel:{{ $member->phone }}" class="text-gray-900 text-hover-primary fw-bold fs-6" style="color: #202124;">{{ $member->phone }}</a>
+                                                <div style="color: #5f6368; font-size: 12px; font-weight: 500;">Phone Number</div>
+                                            </div>
+                                            <!--end::Info-->
+                                        </div>
+                                        <!--end::Item-->
+                                        @endif
+                                        <!--begin::Item-->
+                                        @if($member->state)
+                                        <div class="d-flex">
+                                            <!--begin::Icon-->
+                                            <div class="me-4">
+                                                <div style="width: 40px; height: 40px; background: rgba(250, 123, 23, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fa7b17; font-size: 18px;">
+                                                    <i class="fas fa-map"></i>
+                                                </div>
+                                            </div>
+                                            <!--end::Icon-->
+                                            <!--begin::Info-->
+                                            <div class="flex-grow-1">
+                                                <a href="#" class="text-gray-900 text-hover-primary fw-bold fs-6" style="color: #202124;">{{ $member->state }}</a>
+                                                <div style="color: #5f6368; font-size: 12px; font-weight: 500;">State/Province</div>
+                                            </div>
+                                            <!--end::Info-->
+                                        </div>
+                                        <!--end::Item-->
+                                        @endif
+                                    </div>
+                                    <!--end::Body-->
+                                </div>
+                                <!--end::Sidebar Widget 2-->
+                            </div>
+                            <!--end::Sidebar-->
+
+                            <!--begin::Content Column-->
+                            <div class="col-xxl-9">
+                                <!--begin::Card-->
+                                <div class="card card-flush" style="background: #f8f9fa; border: none; box-shadow: 0 1px 3px rgba(32, 33, 36, 0.08);">
+                                    <!--begin::Card header with nav tabs-->
+                                    <div class="card-header border-0" style="background: #f8f9fa; border-bottom: 1px solid #e0e0e0;">
+                                        <!--begin::Nav tabs-->
+                                        <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent flex-nowrap" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link active" id="overview-tab" data-bs-toggle="tab" href="#overview_pane" role="tab" style="color: #5f6368; border-bottom: 3px solid transparent;">
+                                                    Overview
+                                                </a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" id="details-tab" data-bs-toggle="tab" href="#details_pane" role="tab" style="color: #5f6368; border-bottom: 3px solid transparent;">
+                                                    Details
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <!--end::Nav tabs-->
+                                    </div>
+                                    <!--end::Card header-->
+
+                                    <!--begin::Card body-->
+                                    <div class="card-body pt-9 tab-content" style="background: white;">
+                                        <!--begin::Tab pane: Overview-->
+                                        <div class="tab-pane fade show active" id="overview_pane" role="tabpanel">
+                                            <!--begin::Form group-->
+                                            <div class="mb-8">
+                                                <div class="fs-6 fw-bold mb-3" style="color: #202124;">Personal Information</div>
+                                                <div class="row">
+                                                    @if($member->firstname)
+                                                    <div class="col-md-6 mb-5">
+                                                        <div style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">First Name</div>
+                                                        <div style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->firstname }}</div>
+                                                    </div>
+                                                    @endif
+
+                                                    @if($member->middlename)
+                                                    <div class="col-md-6 mb-5">
+                                                        <div style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">Middle Name</div>
+                                                        <div style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->middlename }}</div>
+                                                    </div>
+                                                    @endif
+
+                                                    @if($member->surname)
+                                                    <div class="col-md-6 mb-5">
+                                                        <div style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">Surname</div>
+                                                        <div style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->surname }}</div>
+                                                    </div>
+                                                    @endif
+
+                                                    @if($member->dob)
+                                                    <div class="col-md-6 mb-5">
+                                                        <div style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">Date of Birth</div>
+                                                        <div style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->dob->format('F d, Y') }}</div>
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <!--end::Form group-->
+
+                                            <!--begin::Form group-->
+                                            <div class="mb-8">
+                                                <div class="fs-6 fw-bold mb-3" style="color: #202124;">Professional Information</div>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-5">
+                                                        <div style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">Position</div>
+                                                        <div style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->position ?? 'N/A' }}</div>
+                                                    </div>
+
+                                                    <div class="col-md-6 mb-5">
+                                                        <div style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">Category</div>
+                                                        <div>
+                                                            <span class="badge" style="background: rgba(24, 90, 188, 0.1); color: #185abc;">
+                                                                @if(strtoupper($member->category) === 'NWC')
+                                                                    National Working Committee
+                                                                @elseif(strtoupper($member->category) === 'NEC')
+                                                                    National Executive Committee
+                                                                @elseif(strtoupper($member->category) === 'DEP')
+                                                                    Deputy
+                                                                @elseif(strtoupper($member->category) === 'STAFF')
+                                                                    Staff Member
+                                                                @else
+                                                                    {{ ucfirst(strtolower($member->category)) }}
+                                                                @endif
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    @if($member->seat)
+                                                    <div class="col-md-6 mb-5">
+                                                        <div style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">Assigned Seat</div>
+                                                        <div style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->seat }}</div>
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <!--end::Form group-->
+
+                                            <!--begin::Form group-->
+                                            @if($member->phone || ($member->state || $member->pscode))
+                                            <div class="mb-8">
+                                                <div class="fs-6 fw-bold mb-3" style="color: #202124;">Contact & Location</div>
+                                                <div class="row">
+                                                    @if($member->phone)
+                                                    <div class="col-md-6 mb-5">
+                                                        <div style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">Phone Number</div>
+                                                        <a href="tel:{{ $member->phone }}" class="text-hover-primary" style="color: #1a73e8; font-size: 15px; font-weight: 600; text-decoration: none;">{{ $member->phone }}</a>
+                                                    </div>
+                                                    @endif
+
+                                                    @if($member->state)
+                                                    <div class="col-md-6 mb-5">
+                                                        <div style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">State/Province</div>
+                                                        <div style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->state }}</div>
+                                                    </div>
+                                                    @endif
+
+                                                    @if($member->pscode)
+                                                    <div class="col-md-6 mb-5">
+                                                        <div style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">Postal Code</div>
+                                                        <div style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->pscode }}</div>
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            @endif
+                                            <!--end::Form group-->
+
+                                            <!--begin::Form group-->
+                                            @if($member->phone)
+                                            <div class="d-flex gap-3">
+                                                <a href="tel:{{ $member->phone }}" class="btn" style="background: #1a73e8; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; text-decoration: none;">
+                                                    <i class="fas fa-phone me-2"></i> Call
+                                                </a>
+                                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $member->phone) }}" target="_blank" class="btn" style="background: rgba(52, 168, 83, 0.1); color: #34a853; border: 1px solid rgba(52, 168, 83, 0.3); padding: 12px 20px; border-radius: 6px; font-weight: 600; text-decoration: none;">
+                                                    <i class="fab fa-whatsapp me-2"></i> WhatsApp
+                                                </a>
+                                            </div>
+                                            @endif
+                                            <!--end::Form group-->
+                                        </div>
+                                        <!--end::Tab pane: Overview-->
+
+                                        <!--begin::Tab pane: Details-->
+                                        <div class="tab-pane fade" id="details_pane" role="tabpanel">
+                                            <!--begin::Form group-->
+                                            <div class="mb-8">
+                                                <div class="fs-6 fw-bold mb-3" style="color: #202124;">Full Profile Summary</div>
+                                                <div class="row">
+                                                    <div class="col-12 mb-5">
+                                                        <div style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">Full Name</div>
+                                                        <div style="color: #202124; font-size: 15px; font-weight: 600;">
+                                                            @if($member->title)
+                                                                {{ $member->title }}
+                                                            @endif
+                                                            {{ $member->firstname }} 
+                                                            @if($member->middlename)
+                                                                {{ $member->middlename }}
+                                                            @endif
+                                                            {{ $member->surname }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--end::Form group-->
+
+                                            <!--begin::Form group-->
+                                            <div class="mb-8">
+                                                <div class="fs-6 fw-bold mb-3" style="color: #202124;">Additional Information</div>
+                                                <div class="table-responsive">
+                                                    <table class="table table-flush table-striped">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase;">Category</td>
+                                                                <td style="color: #202124; font-size: 15px; font-weight: 600;">{{ strtoupper($member->category) }}</td>
+                                                            </tr>
+                                                            @if($member->seat)
+                                                            <tr>
+                                                                <td style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase;">Seat</td>
+                                                                <td style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->seat }}</td>
+                                                            </tr>
+                                                            @endif
+                                                            @if($member->position)
+                                                            <tr>
+                                                                <td style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase;">Position</td>
+                                                                <td style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->position }}</td>
+                                                            </tr>
+                                                            @endif
+                                                            @if($member->dob)
+                                                            <tr>
+                                                                <td style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase;">DOB</td>
+                                                                <td style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->dob->format('F d, Y') }}</td>
+                                                            </tr>
+                                                            @endif
+                                                            @if($member->phone)
+                                                            <tr>
+                                                                <td style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase;">Phone</td>
+                                                                <td style="color: #202124; font-size: 15px; font-weight: 600;"><a href="tel:{{ $member->phone }}" style="color: #1a73e8; text-decoration: none;">{{ $member->phone }}</a></td>
+                                                            </tr>
+                                                            @endif
+                                                            @if($member->state)
+                                                            <tr>
+                                                                <td style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase;">State</td>
+                                                                <td style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->state }}</td>
+                                                            </tr>
+                                                            @endif
+                                                            @if($member->pscode)
+                                                            <tr>
+                                                                <td style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase;">Postal Code</td>
+                                                                <td style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->pscode }}</td>
+                                                            </tr>
+                                                            @endif
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <!--end::Form group-->
+                                        </div>
+                                        <!--end::Tab pane: Details-->
+                                    </div>
+                                    <!--end::Card body-->
+                                </div>
+                                <!--end::Card-->
+                            </div>
+                            <!--end::Content Column-->
                         </div>
                     </div>
-                    @endif
+                    <!--end::Content container-->
                 </div>
-
-                <!-- Footer -->
-                <div class="profile-footer">
-                    <i class="fas fa-shield-alt"></i> Member Profile • {{ now()->format('Y') }} • Public Access
-                </div>
+                <!--end::Content-->
             </div>
+            <!--end::Content wrapper-->
         </div>
+        <!--end::Main-->
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</x-default-layout>
