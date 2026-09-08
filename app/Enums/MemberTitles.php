@@ -25,6 +25,8 @@ class MemberTitles
             'Emir' => 'Emir',
             'Prince' => 'Prince',
             'Princess' => 'Princess',
+            'AMB' => 'AMB',
+            'BARR' => 'BARR',
         ];
     }
 }
