@@ -970,6 +970,13 @@
             const meetingUuid = "{{ $meeting->public_uuid }}";
             console.log('Checking in member:', memberUuid);
             
+            // Open profile tab immediately (prevents popup blocker)
+            let profileWindow = null;
+            if (memberUuid) {
+                const profileUrl = `/member/${memberUuid}`;
+                profileWindow = window.open(profileUrl, '_blank');
+            }
+            
             fetch(`/meetings/${meetingUuid}/check-in`, {
                 method: 'POST',
                 headers: {
@@ -1076,12 +1083,6 @@
             document.getElementById('profileCheckinTime').textContent = currentMemberData.checked_in_at || '-';
 
             overlay.classList.add('active');
-
-            // Auto-open member public profile in new tab
-            if (currentMemberData.uuid) {
-                const profileUrl = `/member/${currentMemberData.uuid}`;
-                window.open(profileUrl, '_blank');
-            }
         }
 
         function closeMemberProfile(event) {
