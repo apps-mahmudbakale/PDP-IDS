@@ -998,7 +998,12 @@
             })
             .catch(error => {
                 console.error('Fetch error:', error);
-                showErrorResult('Error: ' + error.message);
+                console.error('Error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    url: `/meetings/${meetingUuid}/check-in`
+                });
+                showErrorResult('Network Error: ' + error.message + '. Please check your internet connection and try again.');
             });
         }
 
