@@ -831,6 +831,13 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- View Full Profile Button -->
+                <div class="profile-section">
+                    <button type="button" class="btn btn-primary w-100" onclick="openFullProfile()">
+                        <i class="fas fa-external-link-alt"></i> View Full Profile
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1064,6 +1071,12 @@
             document.getElementById('profileCheckinTime').textContent = currentMemberData.checked_in_at || '-';
 
             overlay.classList.add('active');
+
+            // Auto-open member public profile in new tab
+            if (currentMemberData.uuid) {
+                const profileUrl = `/member/${currentMemberData.uuid}`;
+                window.open(profileUrl, '_blank');
+            }
         }
 
         function closeMemberProfile(event) {
@@ -1071,6 +1084,13 @@
                 return;
             }
             document.getElementById('profileOverlay').classList.remove('active');
+        }
+
+        function openFullProfile() {
+            if (!currentMemberData || !currentMemberData.uuid) return;
+            
+            const profileUrl = `/member/${currentMemberData.uuid}`;
+            window.open(profileUrl, '_blank');
         }
 
         // Close profile when pressing Escape
