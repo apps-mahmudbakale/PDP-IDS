@@ -170,14 +170,14 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex gap-2">
-                                                    <form action="{{ route('attendance.reassign-seat', $attendance) }}" method="POST" style="display: inline;" onsubmit="return assignSeat(event, {{ $meeting->total_seats ?? 0 }})">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="seat_number" id="seat-{{ $attendance->id }}">
-                                                        <button type="submit" class="btn btn-sm btn-icon btn-light-info" title="Reassign Seat" @if(!$meeting->total_seats) disabled @endif>
-                                                            {!! getIcon('chair', 'fs-5') !!}
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" class="btn btn-sm btn-icon btn-light-info" title="Reassign Seat" @if(!$meeting->total_seats) disabled @endif onclick="openSeatModal({{ $attendance->id }}, '{{ $attendance->member->firstname }} {{ $attendance->member->surname }}', {{ $attendance->seat_number ?? 'null' }}, {{ $meeting->total_seats ?? 0 }})">
+                                                        {!! getIcon('chair', 'fs-5') !!}
+                                                    </button>
+                                                    @if($attendance->seat_number)
+                                                    <button type="button" class="btn btn-sm btn-icon btn-light-success" title="Print Seat Ticket" onclick="printSeatTicket({{ $attendance->id }}, '{{ $attendance->member->firstname }} {{ $attendance->member->surname }}', {{ $attendance->seat_number }}, '{{ $meeting->title }}')">
+                                                        {!! getIcon('printer', 'fs-5') !!}
+                                                    </button>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
@@ -233,22 +233,210 @@
 
     @push('scripts')
         <script>
-            function assignSeat(event, totalSeats) {
-                event.preventDefault();
-                if (totalSeats === 0) {
-                    alert('This meeting has unlimited seats');
-                    return false;
+            // Seat Assignment Modal
+            function openSeatModal(attendanceId, memberName, currentSeat, totalSeats) {
+                const modal = document.getElementById('seatModal');
+                document.getElementById('modalTitle').textContent = `Assign Seat to ${memberName}`;
+                document.getElementById('currentSeatInfo').textContent = currentSeat ? `Current: Seat #${currentSeat}` : 'Not assigned yet';
+                document.getElementById('seatInput').value = currentSeat || '';
+                document.getElementById('seatInput').max = totalSeats;
+                document.getElementById('seatInput').setAttribute('data-attendance-id', attendanceId);
+                document.getElementById('seatInput').setAttribute('data-total-seats', totalSeats);
+                modal.style.display = 'block';
+                document.getElementById('seatInput').focus();
+            }
+
+            function closeSeatModal() {
+                document.getElementById('seatModal').style.display = 'none';
+            }
+
+            function submitSeatAssignment() {
+                const seatInput = document.getElementById('seatInput');
+                const attendanceId = seatInput.getAttribute('data-attendance-id');
+                const totalSeats = seatInput.getAttribute('data-total-seats');
+                const seatNumber = parseInt(seatInput.value);
+
+                if (!seatNumber || seatNumber < 1 || seatNumber > totalSeats) {
+                    alert(`Please enter a valid seat number (1-${totalSeats})`);
+                    return;
                 }
-                const seatNumber = prompt('Enter seat number (1-' + totalSeats + '):');
-                if (seatNumber && seatNumber > 0 && seatNumber <= totalSeats) {
-                    document.getElementById('seat-' + event.target.closest('form').action.split('/').pop()).value = seatNumber;
-                    event.target.closest('form').submit();
-                } else {
-                    alert('Invalid seat number');
+
+                // Create and submit form
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/attendance/${attendanceId}/reassign-seat`;
+                form.innerHTML = `
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="seat_number" value="${seatNumber}">
+                `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+
+            function printSeatTicket(attendanceId, memberName, seatNumber, meetingTitle) {
+                const printWindow = window.open('', '', 'height=600,width=800');
+                const html = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Seat Ticket - ${memberName}</title>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                margin: 0;
+                                padding: 20px;
+                                background: #f5f5f5;
+                            }
+                            .ticket {
+                                width: 400px;
+                                margin: 20px auto;
+                                background: white;
+                                border: 3px solid #1a73e8;
+                                border-radius: 12px;
+                                padding: 30px;
+                                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                                text-align: center;
+                            }
+                            .header {
+                                border-bottom: 2px solid #f0f0f0;
+                                padding-bottom: 15px;
+                                margin-bottom: 20px;
+                            }
+                            .meeting-title {
+                                font-size: 18px;
+                                color: #1a73e8;
+                                font-weight: 700;
+                                margin-bottom: 10px;
+                            }
+                            .ticket-type {
+                                font-size: 12px;
+                                color: #5f6368;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                font-weight: 600;
+                            }
+                            .member-name {
+                                font-size: 24px;
+                                font-weight: 700;
+                                color: #202124;
+                                margin: 20px 0;
+                            }
+                            .seat-section {
+                                background: linear-gradient(135deg, #1a73e8 0%, #185abc 100%);
+                                color: white;
+                                padding: 30px;
+                                border-radius: 8px;
+                                margin: 20px 0;
+                            }
+                            .seat-label {
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                opacity: 0.9;
+                                margin-bottom: 10px;
+                                font-weight: 600;
+                            }
+                            .seat-number {
+                                font-size: 72px;
+                                font-weight: 700;
+                                line-height: 1;
+                            }
+                            .footer {
+                                border-top: 2px solid #f0f0f0;
+                                padding-top: 15px;
+                                margin-top: 20px;
+                                font-size: 11px;
+                                color: #5f6368;
+                            }
+                            .barcode-area {
+                                margin: 20px 0;
+                                padding: 15px;
+                                background: #f8f9fa;
+                                border-radius: 6px;
+                            }
+                            .barcode-text {
+                                font-size: 10px;
+                                letter-spacing: 2px;
+                                font-family: monospace;
+                                color: #202124;
+                            }
+                            @media print {
+                                body {
+                                    background: white;
+                                }
+                                .ticket {
+                                    margin: 0;
+                                    box-shadow: none;
+                                }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="ticket">
+                            <div class="header">
+                                <div class="ticket-type">🎟️ Seat Ticket</div>
+                                <div class="meeting-title">${meetingTitle}</div>
+                            </div>
+                            <div class="member-name">${memberName}</div>
+                            <div class="seat-section">
+                                <div class="seat-label">Your Seat</div>
+                                <div class="seat-number">#${seatNumber}</div>
+                            </div>
+                            <div class="barcode-area">
+                                <div class="barcode-text">SEAT-${seatNumber}-${attendanceId.toString().padStart(6, '0')}</div>
+                            </div>
+                            <div class="footer">
+                                <p>Please keep this ticket safe. Present it upon entry.</p>
+                                <p>Printed: ${new Date().toLocaleString()}</p>
+                            </div>
+                        </div>
+                        <script>
+                            window.print();
+                        </script>
+                    </body>
+                    </html>
+                `;
+                printWindow.document.write(html);
+                printWindow.document.close();
+            }
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeSeatModal();
                 }
-                return false;
+            });
+
+            // Close modal when clicking outside
+            window.onclick = function(event) {
+                const modal = document.getElementById('seatModal');
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
             }
         </script>
     @endpush
+
+    <!-- Seat Assignment Modal -->
+    <div id="seatModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+        <div style="background-color: white; margin: 100px auto; padding: 0; border-radius: 8px; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+            <div style="padding: 20px; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center;">
+                <h3 id="modalTitle" style="margin: 0; font-size: 18px; font-weight: 600; color: #202124;">Assign Seat</h3>
+                <button onclick="closeSeatModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #5f6368;">&times;</button>
+            </div>
+            <div style="padding: 30px;">
+                <div id="currentSeatInfo" style="font-size: 13px; color: #5f6368; margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 6px;"></div>
+                <div>
+                    <label style="display: block; font-size: 12px; font-weight: 600; color: #5f6368; text-transform: uppercase; margin-bottom: 10px;">Enter Seat Number</label>
+                    <input type="number" id="seatInput" min="1" max="100" placeholder="e.g., 5" style="width: 100%; padding: 12px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 14px; box-sizing: border-box;" onkeypress="if(event.key==='Enter') submitSeatAssignment()">
+                </div>
+            </div>
+            <div style="padding: 20px; border-top: 1px solid #e0e0e0; display: flex; gap: 10px; justify-content: flex-end;">
+                <button onclick="closeSeatModal()" style="padding: 10px 20px; background: #f0f0f0; color: #202124; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Cancel</button>
+                <button onclick="submitSeatAssignment()" style="padding: 10px 20px; background: #1a73e8; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Assign Seat</button>
+            </div>
+        </div>
+    </div>
 
 </x-default-layout>
