@@ -94,8 +94,6 @@
                 <span class="invalid-feedback">{{ $message }}</span>
             @enderror
         </div>
-
-    <div class="row mb-6">
         <div class="col-md-6">
             <label class="form-label">Postal Code</label>
             <input type="text" name="pscode" class="form-control @error('pscode') is-invalid @enderror" value="{{ old('pscode', $member->pscode ?? '') }}">
@@ -103,6 +101,9 @@
                 <span class="invalid-feedback">{{ $message }}</span>
             @enderror
         </div>
+    </div>
+
+    <div class="row mb-6">
         <div class="col-md-6">
             <label class="form-label">Photo</label>
             <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
