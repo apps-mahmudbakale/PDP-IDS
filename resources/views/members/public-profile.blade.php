@@ -178,6 +178,25 @@
                                         </div>
                                         <!--end::Item-->
                                         <!--begin::Item-->
+                                        @if($member->email)
+                                        <div class="d-flex mb-8">
+                                            <!--begin::Icon-->
+                                            <div class="me-4">
+                                                <div style="width: 40px; height: 40px; background: rgba(26, 115, 232, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1a73e8; font-size: 18px;">
+                                                    <i class="fas fa-envelope"></i>
+                                                </div>
+                                            </div>
+                                            <!--end::Icon-->
+                                            <!--begin::Info-->
+                                            <div class="flex-grow-1">
+                                                <a href="mailto:{{ $member->email }}" class="text-gray-900 text-hover-primary fw-bold fs-6" style="color: #202124;">{{ $member->email }}</a>
+                                                <div style="color: #5f6368; font-size: 12px; font-weight: 500;">Email Address</div>
+                                            </div>
+                                            <!--end::Info-->
+                                        </div>
+                                        <!--end::Item-->
+                                        @endif
+                                        <!--begin::Item-->
                                         @if($member->phone)
                                         <div class="d-flex mb-8">
                                             <!--begin::Icon-->
@@ -323,10 +342,16 @@
                                             <!--end::Form group-->
 
                                             <!--begin::Form group-->
-                                            @if($member->phone || ($member->state || $member->pscode))
+                                            @if($member->email || $member->phone || ($member->state || $member->pscode))
                                             <div class="mb-8">
                                                 <div class="fs-6 fw-bold mb-3" style="color: #202124;">Contact & Location</div>
                                                 <div class="row">
+                                                    @if($member->email)
+                                                    <div class="col-md-6 mb-5">
+                                                        <div style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">Email</div>
+                                                        <a href="mailto:{{ $member->email }}" class="text-hover-primary" style="color: #1a73e8; font-size: 15px; font-weight: 600; text-decoration: none;">{{ $member->email }}</a>
+                                                    </div>
+                                                    @endif
                                                     @if($member->phone)
                                                     <div class="col-md-6 mb-5">
                                                         <div style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase; margin-bottom: 8px;">Phone Number</div>
@@ -353,14 +378,21 @@
                                             <!--end::Form group-->
 
                                             <!--begin::Form group-->
-                                            @if($member->phone)
+                                            @if($member->email || $member->phone)
                                             <div class="d-flex gap-3">
+                                                @if($member->email)
+                                                <a href="mailto:{{ $member->email }}" class="btn" style="background: rgba(26, 115, 232, 0.1); color: #1a73e8; border: 1px solid rgba(26, 115, 232, 0.3); padding: 12px 20px; border-radius: 6px; font-weight: 600; text-decoration: none;">
+                                                    <i class="fas fa-envelope me-2"></i> Email
+                                                </a>
+                                                @endif
+                                                @if($member->phone)
                                                 <a href="tel:{{ $member->phone }}" class="btn" style="background: #1a73e8; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; text-decoration: none;">
                                                     <i class="fas fa-phone me-2"></i> Call
                                                 </a>
                                                 <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $member->phone) }}" target="_blank" class="btn" style="background: rgba(52, 168, 83, 0.1); color: #34a853; border: 1px solid rgba(52, 168, 83, 0.3); padding: 12px 20px; border-radius: 6px; font-weight: 600; text-decoration: none;">
                                                     <i class="fab fa-whatsapp me-2"></i> WhatsApp
                                                 </a>
+                                                @endif
                                             </div>
                                             @endif
                                             <!--end::Form group-->
@@ -416,6 +448,12 @@
                                                             <tr>
                                                                 <td style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase;">DOB</td>
                                                                 <td style="color: #202124; font-size: 15px; font-weight: 600;">{{ $member->dob->format('F d, Y') }}</td>
+                                                            </tr>
+                                                            @endif
+                                                            @if($member->phone)
+                                                            <tr>
+                                                                <td style="font-size: 12px; color: #5f6368; font-weight: 600; text-transform: uppercase;">Email</td>
+                                                                <td style="color: #202124; font-size: 15px; font-weight: 600;"><a href="mailto:{{ $member->email }}" style="color: #1a73e8; text-decoration: none;">{{ $member->email }}</a></td>
                                                             </tr>
                                                             @endif
                                                             @if($member->phone)

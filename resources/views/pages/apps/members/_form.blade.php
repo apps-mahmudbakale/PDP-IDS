@@ -47,16 +47,16 @@
 
     <div class="row mb-6">
         <div class="col-md-6">
-            <label class="form-label required">Position</label>
-            <input type="text" name="position" class="form-control @error('position') is-invalid @enderror" value="{{ old('position', $member->position ?? '') }}" required>
-            @error('position')
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $member->email ?? '') }}">
+            @error('email')
                 <span class="invalid-feedback">{{ $message }}</span>
             @enderror
         </div>
         <div class="col-md-6">
-            <label class="form-label">Phone</label>
-            <input type="tel" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone', $member->phone ?? '') }}">
-            @error('phone')
+            <label class="form-label required">Position</label>
+            <input type="text" name="position" class="form-control @error('position') is-invalid @enderror" value="{{ old('position', $member->position ?? '') }}" required>
+            @error('position')
                 <span class="invalid-feedback">{{ $message }}</span>
             @enderror
         </div>
@@ -64,12 +64,22 @@
 
     <div class="row mb-6">
         <div class="col-md-6">
+            <label class="form-label">Phone</label>
+            <input type="tel" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone', $member->phone ?? '') }}">
+            @error('phone')
+                <span class="invalid-feedback">{{ $message }}</span>
+            @enderror
+        </div>
+        <div class="col-md-6">
             <label class="form-label">Date of Birth</label>
             <input type="date" name="dob" class="form-control @error('dob') is-invalid @enderror" value="{{ old('dob', $member->dob?->format('Y-m-d') ?? '') }}">
             @error('dob')
                 <span class="invalid-feedback">{{ $message }}</span>
             @enderror
         </div>
+    </div>
+
+    <div class="row mb-6">
         <div class="col-md-6">
             <label class="form-label">State</label>
             <select name="state" class="form-select @error('state') is-invalid @enderror">
@@ -84,7 +94,6 @@
                 <span class="invalid-feedback">{{ $message }}</span>
             @enderror
         </div>
-    </div>
 
     <div class="row mb-6">
         <div class="col-md-6">

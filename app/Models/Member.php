@@ -20,6 +20,7 @@ class Member extends Model
         'surname',
         'firstname',
         'middlename',
+        'email',
         'position',
         'phone',
         'dob',
