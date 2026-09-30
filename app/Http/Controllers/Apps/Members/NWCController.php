@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Apps\Members;
 
+use App\Enums\MemberCategory;
 use App\Http\Controllers\Concerns\ExportsMemberListPdf;
 use App\Http\Controllers\Controller;
 use App\Models\Member;
@@ -11,9 +12,7 @@ class NWCController extends Controller
 {
     use ExportsMemberListPdf;
 
-    protected string $category = 'NWC';
-
-    protected string $categoryLabel = 'NWC';
+    protected string $category = MemberCategory::NWC->value;
 
     /**
      * Display a listing of the resource.

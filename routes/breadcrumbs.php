@@ -121,6 +121,48 @@ Breadcrumbs::for('members.deps.edit', function (BreadcrumbTrail $trail, $member)
     $trail->push('Edit', route('members.deps.edit', $member));
 });
 
+// EST Staff Members
+Breadcrumbs::for('members.est-staff.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('members.index');
+    $trail->push('EST Staff Members', route('members.est-staff.index'));
+});
+
+Breadcrumbs::for('members.est-staff.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('members.est-staff.index');
+    $trail->push('Add Member', route('members.est-staff.create'));
+});
+
+Breadcrumbs::for('members.est-staff.show', function (BreadcrumbTrail $trail, $member) {
+    $trail->parent('members.est-staff.index');
+    $trail->push("{$member->firstname} {$member->surname}", route('members.est-staff.show', $member));
+});
+
+Breadcrumbs::for('members.est-staff.edit', function (BreadcrumbTrail $trail, $member) {
+    $trail->parent('members.est-staff.show', $member);
+    $trail->push('Edit', route('members.est-staff.edit', $member));
+});
+
+// Personal Staff Members (nested under NWC)
+Breadcrumbs::for('members.personal-staff.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('members.nwc.index');
+    $trail->push('Personal Staff', route('members.personal-staff.index'));
+});
+
+Breadcrumbs::for('members.personal-staff.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('members.personal-staff.index');
+    $trail->push('Add Member', route('members.personal-staff.create'));
+});
+
+Breadcrumbs::for('members.personal-staff.show', function (BreadcrumbTrail $trail, $member) {
+    $trail->parent('members.personal-staff.index');
+    $trail->push("{$member->firstname} {$member->surname}", route('members.personal-staff.show', $member));
+});
+
+Breadcrumbs::for('members.personal-staff.edit', function (BreadcrumbTrail $trail, $member) {
+    $trail->parent('members.personal-staff.show', $member);
+    $trail->push('Edit', route('members.personal-staff.edit', $member));
+});
+
 // Home > Dashboard > Meetings
 Breadcrumbs::for('meetings.index', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');

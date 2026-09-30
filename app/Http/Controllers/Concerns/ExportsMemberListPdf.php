@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Concerns;
 
+use App\Enums\MemberCategory;
 use App\Models\Member;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
@@ -11,8 +12,7 @@ trait ExportsMemberListPdf
     /**
      * Export the category's member listing to a PDF document.
      *
-     * Expects the consuming controller to define `$category` and
-     * `$categoryLabel` properties.
+     * Expects the consuming controller to define a `$category` property.
      */
     public function exportPdf(): Response
     {
@@ -20,7 +20,7 @@ trait ExportsMemberListPdf
 
         $view = view('pages.apps.members._list-pdf', [
             'members' => $members,
-            'label' => $this->categoryLabel,
+            'label' => $this->categoryLabel(),
         ]);
 
         $render = fn ($totalPages) => Pdf::loadHTML($view->with('totalPages', $totalPages)->render())
@@ -33,8 +33,18 @@ trait ExportsMemberListPdf
 
         $pageCount = $probe->getCanvas()->get_page_count();
 
-        $filename = strtolower($this->category).'-members-'.now()->format('Y-m-d').'.pdf';
+        $filename = str_replace('_', '-', strtolower($this->category))
+            .'-members-'.now()->format('Y-m-d').'.pdf';
 
         return $render($pageCount)->download($filename);
+    }
+
+    /**
+     * The human readable name of this controller's category, resolved from
+     * the MemberCategory enum.
+     */
+    protected function categoryLabel(): string
+    {
+        return MemberCategory::tryFrom($this->category)?->label() ?? $this->category;
     }
 }

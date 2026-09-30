@@ -74,29 +74,58 @@
 				<!--end:Menu sub-->
 			</div>
 			<!--end:Menu item-->
-			<!--begin:Menu item-->
-			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('members.*') ? 'here show' : '' }}">
-				<!--begin:Menu link-->
-				<span class="menu-link">
-					<span class="menu-icon">{!! getIcon('people', 'fs-2') !!}</span>
-					<span class="menu-title">Members</span>
-					<span class="menu-arrow"></span>
-				</span>
-				<!--end:Menu link-->
-				<!--begin:Menu sub-->
-				<div class="menu-sub menu-sub-accordion">
 					<!--begin:Menu item-->
-					<div class="menu-item">
+					<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('members.nwc.*', 'members.personal-staff.*') ? 'here show' : '' }}">
 						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('members.nwc.*') ? 'active' : '' }}" href="{{ route('members.nwc.index') }}">
-							<span class="menu-bullet">
-								<span class="bullet bullet-dot"></span>
-							</span>
-							<span class="menu-title">NWC</span>
-						</a>
+						<span class="menu-link">
+							<span class="menu-icon">{!! getIcon('people', 'fs-2') !!}</span>
+							<span class="menu-title">Members</span>
+							<span class="menu-arrow"></span>
+						</span>
 						<!--end:Menu link-->
-					</div>
-					<!--end:Menu item-->
+						<!--begin:Menu sub-->
+						<div class="menu-sub menu-sub-accordion">
+							<!--begin:Menu item-->
+							<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('members.personal-staff.*') ? 'here show' : '' }}">
+								<!--begin:Menu link-->
+								<span class="menu-link">
+									<span class="menu-bullet">
+										<span class="bullet bullet-dot"></span>
+									</span>
+									<span class="menu-title">NWC</span>
+									<span class="menu-arrow"></span>
+								</span>
+								<!--end:Menu link-->
+								<!--begin:Menu sub-->
+								<div class="menu-sub menu-sub-accordion">
+									<!--begin:Menu item-->
+									<div class="menu-item">
+										<!--begin:Menu link-->
+										<a class="menu-link {{ request()->routeIs('members.nwc.*') ? 'active' : '' }}" href="{{ route('members.nwc.index') }}">
+											<span class="menu-bullet">
+												<span class="bullet bullet-dot"></span>
+											</span>
+											<span class="menu-title">All NWC Members</span>
+										</a>
+										<!--end:Menu link-->
+									</div>
+									<!--end::Menu item-->
+									<!--begin:Menu item-->
+									<div class="menu-item">
+										<!--begin:Menu link-->
+										<a class="menu-link {{ request()->routeIs('members.personal-staff.*') ? 'active' : '' }}" href="{{ route('members.personal-staff.index') }}">
+											<span class="menu-bullet">
+												<span class="bullet bullet-dot"></span>
+											</span>
+											<span class="menu-title">Personal Staff</span>
+										</a>
+										<!--end:Menu link-->
+									</div>
+									<!--end::Menu item-->
+								</div>
+								<!--end:Menu sub-->
+							</div>
+							<!--end:Menu item-->
 					<!--begin:Menu item-->
 					<div class="menu-item">
 						<!--begin:Menu link-->
@@ -117,6 +146,18 @@
 								<span class="bullet bullet-dot"></span>
 							</span>
 							<span class="menu-title">DEPs</span>
+						</a>
+						<!--end:Menu link-->
+					</div>
+					<!--end:Menu item-->
+					<!--begin:Menu item-->
+					<div class="menu-item">
+						<!--begin:Menu link-->
+						<a class="menu-link {{ request()->routeIs('members.est-staff.*') ? 'active' : '' }}" href="{{ route('members.est-staff.index') }}">
+							<span class="menu-bullet">
+								<span class="bullet bullet-dot"></span>
+							</span>
+							<span class="menu-title">EST Staff</span>
 						</a>
 						<!--end:Menu link-->
 					</div>

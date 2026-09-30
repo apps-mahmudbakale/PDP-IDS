@@ -8,11 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Member;
 use Illuminate\Http\Request;
 
-class DEPsController extends Controller
+class EstStaffController extends Controller
 {
     use ExportsMemberListPdf;
 
-    protected string $category = MemberCategory::DEP->value;
+    protected string $category = MemberCategory::EST_STAFF->value;
 
     /**
      * Display a listing of the resource.
@@ -20,7 +20,7 @@ class DEPsController extends Controller
     public function index()
     {
         $members = Member::where('category', $this->category)->get();
-        return view('pages.apps.members.deps.index', compact('members'));
+        return view('pages.apps.members.est-staff.index', compact('members'));
     }
 
     /**
@@ -28,7 +28,7 @@ class DEPsController extends Controller
      */
     public function create()
     {
-        return view('pages.apps.members.deps.create');
+        return view('pages.apps.members.est-staff.create');
     }
 
     /**
@@ -57,38 +57,38 @@ class DEPsController extends Controller
 
         Member::create($validated);
 
-        return redirect()->route('members.deps.index')
-            ->with('success', 'DEP member created successfully.');
+        return redirect()->route('members.est-staff.index')
+            ->with('success', "{$this->categoryLabel()} member created successfully.");
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Member $dep)
+    public function show(Member $estStaff)
     {
-        if ($dep->category !== $this->category) {
+        if ($estStaff->category !== $this->category) {
             abort(404);
         }
-        return view('pages.apps.members.deps.show', ['member' => $dep]);
+        return view('pages.apps.members.est-staff.show', ['member' => $estStaff]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Member $dep)
+    public function edit(Member $estStaff)
     {
-        if ($dep->category !== $this->category) {
+        if ($estStaff->category !== $this->category) {
             abort(404);
         }
-        return view('pages.apps.members.deps.edit', ['member' => $dep]);
+        return view('pages.apps.members.est-staff.edit', ['member' => $estStaff]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Member $dep)
+    public function update(Request $request, Member $estStaff)
     {
-        if ($dep->category !== $this->category) {
+        if ($estStaff->category !== $this->category) {
             abort(404);
         }
 
@@ -109,24 +109,24 @@ class DEPsController extends Controller
             $validated['image'] = $request->file('image')->store('members', 'public');
         }
 
-        $dep->update($validated);
+        $estStaff->update($validated);
 
-        return redirect()->route('members.deps.index')
-            ->with('success', 'DEP member updated successfully.');
+        return redirect()->route('members.est-staff.index')
+            ->with('success', "{$this->categoryLabel()} member updated successfully.");
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Member $dep)
+    public function destroy(Member $estStaff)
     {
-        if ($dep->category !== $this->category) {
+        if ($estStaff->category !== $this->category) {
             abort(404);
         }
 
-        $dep->delete();
+        $estStaff->delete();
 
-        return redirect()->route('members.deps.index')
-            ->with('success', 'DEP member deleted successfully.');
+        return redirect()->route('members.est-staff.index')
+            ->with('success', "{$this->categoryLabel()} member deleted successfully.");
     }
 }

@@ -1,11 +1,11 @@
 <x-default-layout>
 
     @section('title')
-        NWC Members
+        EST Staff Members
     @endsection
 
     @section('breadcrumbs')
-        {{ Breadcrumbs::render('members.nwc.index') }}
+        {{ Breadcrumbs::render('members.est-staff.index') }}
     @endsection
 
     @if($message = Session::get('success'))
@@ -23,33 +23,26 @@
                 <!--begin::Search-->
                 <div class="d-flex align-items-center position-relative my-1">
                     {!! getIcon('magnifier', 'fs-3 position-absolute ms-5') !!}
-                    <input type="text" id="searchInput" class="form-control form-control-solid w-250px ps-13" placeholder="Search NWC member" />
+                    <input type="text" id="searchInput" class="form-control form-control-solid w-250px ps-13" placeholder="Search EST Staff member" />
                 </div>
                 <!--end::Search-->
             </div>
             <!--end::Card title-->
-
-            <!--begin::Category tabs-->
-            <div class="nav nav-tabs mt-6">
-                <a class="nav-link active" href="{{ route('members.nwc.index') }}">All NWC Members</a>
-                <a class="nav-link" href="{{ route('members.personal-staff.index') }}">Personal Staff</a>
-            </div>
-            <!--end::Category tabs-->
 
             <!--begin::Card toolbar-->
             <div class="card-toolbar">
                 <!--begin::Toolbar-->
                 <div class="d-flex justify-content-end">
                     <!--begin::Export PDF-->
-                    <a href="{{ route('members.nwc.export') }}" class="btn btn-light-info me-3">
+                    <a href="{{ route('members.est-staff.export') }}" class="btn btn-light-info me-3">
                         {!! getIcon('cloud-download', 'fs-2', '', 'i') !!}
                         Export PDF
                     </a>
                     <!--end::Export PDF-->
                     <!--begin::Add member-->
-                    <a href="{{ route('members.nwc.create') }}" class="btn btn-primary">
+                    <a href="{{ route('members.est-staff.create') }}" class="btn btn-primary">
                         {!! getIcon('plus', 'fs-2', '', 'i') !!}
-                        Add NWC Member
+                        Add EST Staff Member
                     </a>
                     <!--end::Add member-->
                 </div>
@@ -88,7 +81,7 @@
                                                 </div>
                                             @endif
                                             <div class="d-flex flex-column">
-                                                <a href="{{ route('members.nwc.show', $member) }}" class="text-gray-800 text-hover-primary">
+                                                <a href="{{ route('members.est-staff.show', $member) }}" class="text-gray-800 text-hover-primary">
                                                     {{ $member->firstname }} {{ $member->middlename }} {{ $member->surname }}
                                                 </a>
                                                 @if($member->title)
@@ -103,10 +96,10 @@
                                     <td>{{ $member->dob?->format('Y-m-d') ?? 'N/A' }}</td>
                                     <td>
                                         <div class="d-flex">
-                                            <a href="{{ route('members.nwc.edit', $member) }}" class="btn btn-sm btn-icon btn-light-warning me-2" title="Edit">
+                                            <a href="{{ route('members.est-staff.edit', $member) }}" class="btn btn-sm btn-icon btn-light-warning me-2" title="Edit">
                                                 {!! getIcon('pencil', 'fs-5') !!}
                                             </a>
-                                            <form action="{{ route('members.nwc.destroy', $member) }}" method="POST" style="display: inline;">
+                                            <form action="{{ route('members.est-staff.destroy', $member) }}" method="POST" style="display: inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-icon btn-light-danger" title="Delete" onclick="return confirm('Are you sure?')">
@@ -126,7 +119,7 @@
                     <div class="mb-3">
                         {!! getIcon('magnifier', 'fs-2tx text-muted') !!}
                     </div>
-                    <p class="text-muted">No NWC members found</p>
+                    <p class="text-muted">No EST Staff members found</p>
                 </div>
             @endif
         </div>

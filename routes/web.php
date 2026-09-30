@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Apps\Members\DEPsController;
+use App\Http\Controllers\Apps\Members\EstStaffController;
 use App\Http\Controllers\Apps\Members\NECController;
 use App\Http\Controllers\Apps\Members\NWCController;
+use App\Http\Controllers\Apps\Members\PersonalStaffController;
 use App\Http\Controllers\Apps\PermissionManagementController;
 use App\Http\Controllers\Apps\RoleManagementController;
 use App\Http\Controllers\Apps\UserManagementController;
@@ -52,10 +54,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/members/nwc/export', [NWCController::class, 'exportPdf'])->name('nwc.export');
         Route::get('/members/nec/export', [NECController::class, 'exportPdf'])->name('nec.export');
         Route::get('/members/deps/export', [DEPsController::class, 'exportPdf'])->name('deps.export');
+        Route::get('/members/est-staff/export', [EstStaffController::class, 'exportPdf'])->name('est-staff.export');
+        Route::get('/members/personal-staff/export', [PersonalStaffController::class, 'exportPdf'])->name('personal-staff.export');
 
         Route::resource('/members/nwc', NWCController::class)->names('nwc');
         Route::resource('/members/nec', NECController::class)->names('nec');
         Route::resource('/members/deps', DEPsController::class)->names('deps');
+        Route::resource('/members/est-staff', EstStaffController::class)->parameters([
+            'est-staff' => 'estStaff',
+        ])->names('est-staff');
+        Route::resource('/members/personal-staff', PersonalStaffController::class)->parameters([
+            'personal-staff' => 'personalStaff',
+        ])->names('personal-staff');
     });
 
     // Meeting routes
