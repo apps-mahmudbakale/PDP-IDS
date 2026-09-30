@@ -17,10 +17,12 @@ trait ExportsMemberListPdf
     public function exportPdf(): Response
     {
         $members = Member::where('category', $this->category)->get();
+        $category = MemberCategory::tryFrom($this->category);
 
         $view = view('pages.apps.members._list-pdf', [
             'members' => $members,
             'label' => $this->categoryLabel(),
+            'withDepartment' => $category?->usesDepartment() ?? false,
         ]);
 
         $render = fn ($totalPages) => Pdf::loadHTML($view->with('totalPages', $totalPages)->render())

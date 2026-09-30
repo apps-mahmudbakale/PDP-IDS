@@ -82,6 +82,16 @@
 
                 <div class="row mb-6">
                     <div class="col-md-6">
+                        <label class="form-label required">Department</label>
+                        <input type="text" name="department" class="form-control @error('department') is-invalid @enderror" value="{{ old('department') }}" required>
+                        @error('department')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <div class="col-md-6">
                         <label class="form-label">Phone</label>
                         <input type="tel" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}">
                         @error('phone')

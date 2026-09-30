@@ -62,6 +62,7 @@
                             <tr class="fw-semibold fs-6 text-gray-800 px-4">
                                 <th>Name</th>
                                 <th>Position</th>
+                                <th>Department</th>
                                 <th>Phone</th>
                                 <th>State</th>
                                 <th>DOB</th>
@@ -91,6 +92,7 @@
                                         </div>
                                     </td>
                                     <td>{{ $member->position }}</td>
+                                    <td>{{ $member->department ?? 'N/A' }}</td>
                                     <td>{{ $member->phone ?? 'N/A' }}</td>
                                     <td>{{ $member->state ?? 'N/A' }}</td>
                                     <td>{{ $member->dob?->format('Y-m-d') ?? 'N/A' }}</td>

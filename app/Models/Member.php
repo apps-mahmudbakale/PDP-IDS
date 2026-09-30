@@ -30,6 +30,7 @@ class Member extends Model
         'pscode',
         'image',
         'category',
+        'department',
         'public_uuid',
     ];
 

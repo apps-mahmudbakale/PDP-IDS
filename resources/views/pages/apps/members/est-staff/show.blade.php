@@ -51,6 +51,10 @@
                                     <td class="fw-bold">{{ $member->position }}</td>
                                 </tr>
                                 <tr>
+                                    <td class="text-muted fs-7 fw-bold">Department</td>
+                                    <td class="fw-bold">{{ $member->department ?? '-' }}</td>
+                                </tr>
+                                <tr>
                                     <td class="text-muted fs-7 fw-bold">Phone</td>
                                     <td class="fw-bold">{{ $member->phone ?? '-' }}</td>
                                 </tr>

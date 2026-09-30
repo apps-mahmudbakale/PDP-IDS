@@ -15,6 +15,14 @@ class PersonalStaffController extends Controller
     protected string $category = MemberCategory::PERSONAL_STAFF->value;
 
     /**
+     * Whether this category's members must record a department.
+     */
+    protected function usesDepartment(): bool
+    {
+        return MemberCategory::tryFrom($this->category)?->usesDepartment() ?? false;
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -46,6 +54,9 @@ class PersonalStaffController extends Controller
             'dob' => 'nullable|date',
             'state' => 'nullable|string|max:100',
             'pscode' => 'nullable|string|max:10',
+            'department' => $this->usesDepartment()
+                ? 'required|string|max:100'
+                : 'nullable|string|max:100',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -102,6 +113,9 @@ class PersonalStaffController extends Controller
             'dob' => 'nullable|date',
             'state' => 'nullable|string|max:100',
             'pscode' => 'nullable|string|max:10',
+            'department' => $this->usesDepartment()
+                ? 'required|string|max:100'
+                : 'nullable|string|max:100',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 

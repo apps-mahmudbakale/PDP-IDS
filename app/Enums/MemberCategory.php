@@ -27,6 +27,17 @@ enum MemberCategory: string
     }
 
     /**
+     * Whether members in this category must record a department.
+     *
+     * Only the two staff categories are department-based; the column stays
+     * null for every other category.
+     */
+    public function usesDepartment(): bool
+    {
+        return in_array($this, [self::EST_STAFF, self::PERSONAL_STAFF], true);
+    }
+
+    /**
      * The database enum values, in declaration order.
      *
      * @return array<int, string>

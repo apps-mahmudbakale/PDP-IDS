@@ -83,6 +83,15 @@
             width: 34%;
         }
 
+        /* Departments add a seventh column, so the name column yields space. */
+        .with-department .cell-user {
+            width: 26%;
+        }
+
+        .cell-department {
+            width: 14%;
+        }
+
         .cell-photo {
             width: 9%;
         }
@@ -124,7 +133,7 @@
         }
     </style>
 </head>
-<body>
+<body class="{{ $withDepartment ? 'with-department' : '' }}">
 
 <header>
     <h1>{{ $label }} Members</h1>
@@ -139,6 +148,9 @@
             <th class="cell-photo">Photo</th>
             <th class="cell-user">Name</th>
             <th>Position</th>
+            @if($withDepartment)
+                <th class="cell-department">Department</th>
+            @endif
             <th>Phone</th>
             <th>State</th>
             <th class="cell-dob">DOB</th>
@@ -161,13 +173,16 @@
                     @endif
                 </td>
                 <td>{{ $member->position }}</td>
+                @if($withDepartment)
+                    <td>{{ $member->department ?? 'N/A' }}</td>
+                @endif
                 <td>{{ $member->phone ?? 'N/A' }}</td>
                 <td>{{ $member->state ?? 'N/A' }}</td>
                 <td>{{ $member->dob?->format('Y-m-d') ?? 'N/A' }}</td>
             </tr>
         @empty
             <tr>
-                <td colspan="6" class="empty">No {{ $label }} members found</td>
+                <td colspan="{{ $withDepartment ? 7 : 6 }}" class="empty">No {{ $label }} members found</td>
             </tr>
         @endforelse
     </tbody>

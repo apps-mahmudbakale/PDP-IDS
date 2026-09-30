@@ -20,6 +20,7 @@
         <!--begin::Card body-->
         <div class="card-body py-4">
             @include('pages.apps.members._form', [
+                'withDepartment' => true,
                 'isEdit' => true,
                 'action' => route('members.est-staff.update', $member),
                 'cancelUrl' => route('members.est-staff.index')
