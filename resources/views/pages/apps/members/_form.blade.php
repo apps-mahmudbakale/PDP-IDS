@@ -1,4 +1,5 @@
 <form action="{{ $action }}" method="POST" enctype="multipart/form-data">
+    @php($codeHint = \App\Enums\MemberCategory::tryFrom($category ?? '')?->codePrefix().'-001')
     @csrf
     @if($isEdit)
         @method('PUT')
@@ -107,8 +108,9 @@
             @enderror
         </div>
         <div class="col-md-6">
-            <label class="form-label">Postal Code</label>
-            <input type="text" name="pscode" class="form-control @error('pscode') is-invalid @enderror" value="{{ old('pscode', $member->pscode ?? '') }}">
+            <label class="form-label">Member Code</label>
+            <input type="text" name="pscode" class="form-control @error('pscode') is-invalid @enderror" value="{{ old('pscode', $member->pscode ?? '') }}" placeholder="{{ $codeHint ?? '' }}" maxlength="20">
+            <small class="text-muted">e.g. {{ $codeHint ?? 'STF-NWC-001' }}</small>
             @error('pscode')
                 <span class="invalid-feedback">{{ $message }}</span>
             @enderror

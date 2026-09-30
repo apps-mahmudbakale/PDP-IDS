@@ -27,6 +27,24 @@ enum MemberCategory: string
     }
 
     /**
+     * The prefix used when composing a member code, e.g. "STF-NWC-001".
+     *
+     * Shown as a hint on the code field. Codes are typed manually, so this
+     * documents the convention rather than enforcing it.
+     */
+    public function codePrefix(): string
+    {
+        return match ($this) {
+            self::NWC => 'STF-NWC',
+            self::NEC => 'STF-NEC',
+            self::DEP => 'STF-DEP',
+            self::STAFF => 'STF-STAFF',
+            self::EST_STAFF => 'STF-EST',
+            self::PERSONAL_STAFF => 'STF-PS',
+        };
+    }
+
+    /**
      * Whether members in this category must record a department.
      *
      * Only the two staff categories are department-based; the column stays

@@ -113,8 +113,9 @@
                         @enderror
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Postal Code</label>
-                        <input type="text" name="pscode" class="form-control @error('pscode') is-invalid @enderror" value="{{ old('pscode') }}">
+                        <label class="form-label">Member Code</label>
+                        <input type="text" name="pscode" class="form-control @error('pscode') is-invalid @enderror" value="{{ old('pscode') }}" placeholder="{{ \App\Enums\MemberCategory::tryFrom($category ?? '')?->codePrefix().'-001' }}" maxlength="20">
+                        <small class="text-muted">e.g. {{ \App\Enums\MemberCategory::tryFrom($category ?? '')?->codePrefix().'-001' }}</small>
                         @error('pscode')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror

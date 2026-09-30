@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Apps\Members;
 
 use App\Enums\MemberCategory;
 use App\Http\Controllers\Concerns\ExportsMemberListPdf;
+use App\Http\Controllers\Concerns\ValidatesMemberFields;
 use App\Http\Controllers\Controller;
 use App\Models\Member;
 use Illuminate\Http\Request;
 
 class PersonalStaffController extends Controller
 {
-    use ExportsMemberListPdf;
+    use ExportsMemberListPdf, ValidatesMemberFields;
 
     protected string $category = MemberCategory::PERSONAL_STAFF->value;
 
@@ -36,7 +37,7 @@ class PersonalStaffController extends Controller
      */
     public function create()
     {
-        return view('pages.apps.members.personal-staff.create');
+        return view('pages.apps.members.personal-staff.create', ['category' => $this->category]);
     }
 
     /**
@@ -53,7 +54,7 @@ class PersonalStaffController extends Controller
             'phone' => 'nullable|string|max:20',
             'dob' => 'nullable|date',
             'state' => 'nullable|string|max:100',
-            'pscode' => 'nullable|string|max:10',
+            'pscode' => $this->pscodeRules(),
             'department' => $this->usesDepartment()
                 ? 'required|string|max:100'
                 : 'nullable|string|max:100',
@@ -91,7 +92,7 @@ class PersonalStaffController extends Controller
         if ($personalStaff->category !== $this->category) {
             abort(404);
         }
-        return view('pages.apps.members.personal-staff.edit', ['member' => $personalStaff]);
+        return view('pages.apps.members.personal-staff.edit', ['member' => $personalStaff, 'category' => $this->category]);
     }
 
     /**
@@ -112,7 +113,7 @@ class PersonalStaffController extends Controller
             'phone' => 'nullable|string|max:20',
             'dob' => 'nullable|date',
             'state' => 'nullable|string|max:100',
-            'pscode' => 'nullable|string|max:10',
+            'pscode' => $this->pscodeRules(),
             'department' => $this->usesDepartment()
                 ? 'required|string|max:100'
                 : 'nullable|string|max:100',

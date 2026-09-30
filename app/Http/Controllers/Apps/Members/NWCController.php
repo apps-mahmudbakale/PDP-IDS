@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Apps\Members;
 
 use App\Enums\MemberCategory;
 use App\Http\Controllers\Concerns\ExportsMemberListPdf;
+use App\Http\Controllers\Concerns\ValidatesMemberFields;
 use App\Http\Controllers\Controller;
 use App\Models\Member;
 use Illuminate\Http\Request;
 
 class NWCController extends Controller
 {
-    use ExportsMemberListPdf;
+    use ExportsMemberListPdf, ValidatesMemberFields;
 
     protected string $category = MemberCategory::NWC->value;
 
@@ -28,7 +29,7 @@ class NWCController extends Controller
      */
     public function create()
     {
-        return view('pages.apps.members.nwc.create');
+        return view('pages.apps.members.nwc.create', ['category' => $this->category]);
     }
 
     /**
@@ -45,7 +46,7 @@ class NWCController extends Controller
             'phone' => 'nullable|string|max:20',
             'dob' => 'nullable|date',
             'state' => 'nullable|string|max:100',
-            'pscode' => 'nullable|string|max:10',
+            'pscode' => $this->pscodeRules(),
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -80,7 +81,7 @@ class NWCController extends Controller
         if ($nwc->category !== $this->category) {
             abort(404);
         }
-        return view('pages.apps.members.nwc.edit', ['member' => $nwc]);
+        return view('pages.apps.members.nwc.edit', ['member' => $nwc, 'category' => $this->category]);
     }
 
     /**
@@ -101,7 +102,7 @@ class NWCController extends Controller
             'phone' => 'nullable|string|max:20',
             'dob' => 'nullable|date',
             'state' => 'nullable|string|max:100',
-            'pscode' => 'nullable|string|max:10',
+            'pscode' => $this->pscodeRules(),
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
