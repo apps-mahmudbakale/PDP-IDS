@@ -92,21 +92,18 @@
         }
 
         .photo {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            object-fit: cover;
+            width: 40px;
+            height: 40px;
         }
 
         .initials {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
+            width: 40px;
+            height: 40px;
             background-color: #e1f4fb;
             color: #0d99c6;
-            font-size: 10px;
+            font-size: 14px;
             font-weight: bold;
-            line-height: 34px;
+            line-height: 40px;
             text-align: center;
         }
 

@@ -77,6 +77,9 @@ class Member extends Model
     /**
      * Get the member photo as an inline data URI, for use in server-rendered
      * documents such as PDFs. Returns null when no readable image exists.
+     *
+     * The image is centre-cropped to a square first, because dompdf has no
+     * `object-fit` support and would otherwise squash non-square photos.
      */
     public function getImageDataUriAttribute(): ?string
     {
@@ -91,9 +94,48 @@ class Member extends Model
                 return null;
             }
 
-            return 'data:'.$disk->mimeType($this->image).';base64,'.base64_encode($disk->get($this->image));
+            $raw = $disk->get($this->image);
+            $square = $this->cropToSquare($raw);
+
+            return 'data:image/png;base64,'.base64_encode($square ?? $raw);
         } catch (Throwable) {
             return null;
+        }
+    }
+
+    /**
+     * Centre-crop image bytes to a square PNG. Returns null when GD cannot
+     * read the image, so the caller can fall back to the original bytes.
+     */
+    private function cropToSquare(string $raw): ?string
+    {
+        $image = @imagecreatefromstring($raw);
+
+        if ($image === false) {
+            return null;
+        }
+
+        try {
+            $width = imagesx($image);
+            $height = imagesy($image);
+            $side = min($width, $height);
+            $sourceX = intdiv($width - $side, 2);
+            $sourceY = intdiv($height - $side, 2);
+
+            $size = 240;
+            $canvas = imagecreatetruecolor($size, $size);
+            imagealphablending($canvas, false);
+            imagesavealpha($canvas, true);
+            imagecopy($canvas, $image, 0, 0, $sourceX, $sourceY, $side, $side);
+
+            ob_start();
+            imagepng($canvas, null, 7);
+
+            return (string) ob_get_clean();
+        } catch (Throwable) {
+            return null;
+        } finally {
+            imagedestroy($image);
         }
     }
 
