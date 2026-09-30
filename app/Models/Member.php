@@ -105,8 +105,27 @@ class Member extends Model
     }
 
     /**
+     * The largest square crop produced for a PDF thumbnail. 240px covers a
+     * 60pt cell at roughly 288 DPI, so there is no point going bigger.
+     */
+    private const MAX_CROP_SIZE = 240;
+
+    /**
+     * How far down a tall photo the square crop window starts, as a fraction
+     * of the excess height. A centred window (0.5) cuts the head off.
+     */
+    private const TOP_CROP_BIAS = 0.35;
+
+    /**
      * Centre-crop image bytes to a square PNG. Returns null when GD cannot
      * read the image, so the caller can fall back to the original bytes.
+     *
+     * Tall photos are cropped towards the top rather than the middle, because
+     * heads sit in the upper part of a portrait and a centred square slices
+     * them off — the main reason a thumbnail is hard to recognise.
+     *
+     * The crop is never scaled up past the source, so small photos stay sharp
+     * instead of being blown up and blurred.
      */
     private function cropToSquare(string $raw): ?string
     {
@@ -121,13 +140,13 @@ class Member extends Model
             $height = imagesy($image);
             $side = min($width, $height);
             $sourceX = intdiv($width - $side, 2);
-            $sourceY = intdiv($height - $side, 2);
+            $sourceY = (int) round(max(0, $height - $side) * self::TOP_CROP_BIAS);
 
-            $size = 240;
+            $size = min($side, self::MAX_CROP_SIZE);
             $canvas = imagecreatetruecolor($size, $size);
             imagealphablending($canvas, false);
             imagesavealpha($canvas, true);
-            imagecopy($canvas, $image, 0, 0, $sourceX, $sourceY, $side, $side);
+            imagecopyresampled($canvas, $image, 0, 0, $sourceX, $sourceY, $side, $side, $size, $size);
 
             ob_start();
             imagepng($canvas, null, 7);

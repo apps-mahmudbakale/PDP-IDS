@@ -93,7 +93,19 @@
         }
 
         .cell-photo {
-            width: 9%;
+            width: 12%;
+            text-align: center;
+        }
+
+        /*
+         * dompdf does not grow a table row to fit a replaced element, so a
+         * photo taller than the row spills over the row beneath it. The row
+         * is pinned to the photo height plus cell padding instead, and the
+         * photo is made a block box so it contributes to that height.
+         */
+        td.photo-cell {
+            height: 60pt;
+            padding: 4px;
         }
 
         .cell-dob {
@@ -101,18 +113,21 @@
         }
 
         .photo {
-            width: 40px;
-            height: 40px;
+            display: block;
+            width: 60pt;
+            height: 60pt;
+            margin: 0 auto;
         }
 
         .initials {
-            width: 40px;
-            height: 40px;
+            display: block;
+            width: 60pt;
+            height: 60pt;
             background-color: #e1f4fb;
             color: #0d99c6;
-            font-size: 14px;
+            font-size: 26px;
             font-weight: bold;
-            line-height: 40px;
+            line-height: 60pt;
             text-align: center;
         }
 
@@ -159,7 +174,7 @@
     <tbody>
         @forelse($members as $member)
             <tr>
-                <td class="center">
+                <td class="center photo-cell">
                     @if($member->image_data_uri)
                         <img src="{{ $member->image_data_uri }}" alt="{{ $member->firstname }}" class="photo">
                     @else
