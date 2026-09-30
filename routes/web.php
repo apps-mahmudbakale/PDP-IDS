@@ -47,6 +47,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::name('members.')->group(function () {
+        // Declared before the resources so the {nwc}/{nec}/{dep} parameters
+        // do not capture the literal "export" segment.
+        Route::get('/members/nwc/export', [NWCController::class, 'exportPdf'])->name('nwc.export');
+        Route::get('/members/nec/export', [NECController::class, 'exportPdf'])->name('nec.export');
+        Route::get('/members/deps/export', [DEPsController::class, 'exportPdf'])->name('deps.export');
+
         Route::resource('/members/nwc', NWCController::class)->names('nwc');
         Route::resource('/members/nec', NECController::class)->names('nec');
         Route::resource('/members/deps', DEPsController::class)->names('deps');

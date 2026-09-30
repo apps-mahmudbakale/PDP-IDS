@@ -33,6 +33,12 @@
             <div class="card-toolbar">
                 <!--begin::Toolbar-->
                 <div class="d-flex justify-content-end">
+                    <!--begin::Export PDF-->
+                    <a href="{{ route('members.nec.export') }}" class="btn btn-light-info me-3">
+                        {!! getIcon('cloud-download', 'fs-2', '', 'i') !!}
+                        Export PDF
+                    </a>
+                    <!--end::Export PDF-->
                     <!--begin::Add member-->
                     <a href="{{ route('members.nec.create') }}" class="btn btn-primary">
                         {!! getIcon('plus', 'fs-2', '', 'i') !!}

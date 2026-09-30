@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\Apps\Members;
 
+use App\Http\Controllers\Concerns\ExportsMemberListPdf;
 use App\Http\Controllers\Controller;
 use App\Models\Member;
 use Illuminate\Http\Request;
 
 class DEPsController extends Controller
 {
+    use ExportsMemberListPdf;
+
     protected string $category = 'DEP';
+
+    protected string $categoryLabel = 'DEPs';
 
     /**
      * Display a listing of the resource.

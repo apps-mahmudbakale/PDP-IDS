@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\Apps\Members;
 
+use App\Http\Controllers\Concerns\ExportsMemberListPdf;
 use App\Http\Controllers\Controller;
 use App\Models\Member;
 use Illuminate\Http\Request;
 
 class NECController extends Controller
 {
+    use ExportsMemberListPdf;
+
     protected string $category = 'NEC';
+
+    protected string $categoryLabel = 'NEC';
 
     /**
      * Display a listing of the resource.

@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Throwable;
 
 class Member extends Model
 {
@@ -70,6 +72,29 @@ class Member extends Model
     public static function getByCategory(string $category)
     {
         return static::where('category', $category)->get();
+    }
+
+    /**
+     * Get the member photo as an inline data URI, for use in server-rendered
+     * documents such as PDFs. Returns null when no readable image exists.
+     */
+    public function getImageDataUriAttribute(): ?string
+    {
+        if (! $this->image) {
+            return null;
+        }
+
+        try {
+            $disk = Storage::disk('public');
+
+            if (! $disk->exists($this->image)) {
+                return null;
+            }
+
+            return 'data:'.$disk->mimeType($this->image).';base64,'.base64_encode($disk->get($this->image));
+        } catch (Throwable) {
+            return null;
+        }
     }
 
     /**
